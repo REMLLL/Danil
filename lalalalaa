@@ -2,6 +2,7 @@ local Ants = require(game.ReplicatedStorage.Modules.Ants)
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Player = Players.LocalPlayer
 
@@ -9,7 +10,7 @@ local Leaderstats = Player:WaitForChild("Leaderstats")
 local Vars = Player:WaitForChild("Vars")
 local AllStats = Player:WaitForChild("All_Stats")
 
-local Field = Player.Name == "bnnuyman" and "Cedar" or "Rose"
+--local FieldName = Player.Name == "bnnuyman" and "Cedar" or "Rose"
 
 
 local ohString1 = "ActionCall"
@@ -47,7 +48,9 @@ Convert = function()
 end
 Gather = function()
 	local Character = Player.Character or Player.CharacterAdded:Wait()
-	local Field = workspace.Zones.Fields:FindFirstChild(Field)
+	local FieldName = getgenv().Field
+	if not FieldName then return end
+	local Field = workspace.Zones.Fields:FindFirstChild(FieldName)
 	if not Field then return end
 	Character:PivotTo(CFrame.new(Field.Position))
 	repeat task.wait() if not Leaderstats or not Leaderstats.Parent or not AllStats or not AllStats.Parent then break end until Leaderstats.Pollen.Value >= AllStats["Total Capacity"].Value
@@ -70,6 +73,23 @@ function AutoFarm()
 					TokenInstance.Position = Player.Character.PrimaryPart.Position
 				end)
 			end)
+		end
+
+		local Items = getgenv().requiredItems
+		if Items then
+			for i,Item in Items do
+				local InBoost = require(game.ReplicatedStorage.Modules.InformationTables).Boosts.Boosts
+				if InBoost[Item] then
+					local Time = InBoost[Item].Time
+					if Time then
+						task.defer(function()
+							while task.wait(Time) do
+								game:GetService("ReplicatedStorage").Events.Server_Event:FireServer("UseItem", Item)
+							end
+						end)
+					end
+				end
+			end
 		end
 	end)
 	task.wait(0.2)
