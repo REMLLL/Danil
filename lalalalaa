@@ -79,11 +79,15 @@ end
 
 function AutoFarm()
 	task.wait(2)
-	local Chosen = GetRandomAnthill()
+	local Anthill = Vars:WaitForChild("Anthill")
+
+	local Chosen = Anthill.Value or GetRandomAnthill()
 	local Character = Player.Character or Player.CharacterAdded:Wait()
 	Character:PivotTo(CFrame.new(Chosen.Position))
 	task.wait(0.2)
-	game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, Chosen)
+	if Anthill.Value then
+		game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, Chosen)
+	end
 	task.wait(1)
 	if Leaderstats.Pollen.Value > 0 then
 		Convert()
@@ -93,22 +97,11 @@ function AutoFarm()
 end
 
 AutoFarm()
-workspace.Tokens.ChildAdded:Connect(function(TokenInstance)
-	if not Player.Character or Player.Character.Parent then return end
-	local success, error = pcall(function()
-		TokenInstance.Position = Player.Character.PrimaryPart.Position
+for i,Name in {"Tokens", "Bubbles", "Fires"} do
+	workspace[Name].ChildAdded:Connect(function(TokenInstance)
+		if not Player.Character or Player.Character.Parent then return end
+		local success, error = pcall(function()
+			TokenInstance.Position = Player.Character.PrimaryPart.Position
+		end)
 	end)
-end)
-
-workspace.Bubbles.ChildAdded:Connect(function(TokenInstance)
-	if not Player.Character or Player.Character.Parent then return end
-	local success, error = pcall(function()
-		TokenInstance.Position = Player.Character.PrimaryPart.Position
-	end)
-end)
-workspace.Fires.ChildAdded:Connect(function(TokenInstance)
-	if not Player.Character or Player.Character.Parent then return end
-	local success, error = pcall(function()
-		TokenInstance.Position = Player.Character.PrimaryPart.Position
-	end)
-end)
+end
