@@ -15,7 +15,6 @@ local Field = "Cedar"
 local ohString1 = "ActionCall"
 local ohString2 = "Anthill"
 
-
 for i,v in Ants do
 	setreadonly(v, false)
 	v.Flying = true
@@ -33,28 +32,6 @@ local function GetRandomAnthill()
 		end
 	end
 end
-local function TweenModel(model : Model, CF : CFrame, info : TweenInfo)
-	if model:IsA("Model") then
-		local CFrameValue = Instance.new("CFrameValue")
-		CFrameValue.Value = model:GetPivot()
-
-		CFrameValue:GetPropertyChangedSignal("Value"):Connect(function()
-			if model.PrimaryPart ~= nil then
-				model:PivotTo(CFrameValue.Value)
-			end
-		end)
-
-		local tween = TweenService:Create(CFrameValue, info, {Value = CF})
-		tween:Play()
-
-		tween.Completed:Connect(function()
-			CFrameValue:Destroy()
-		end)
-	else
-		warn("Error: Provided Object is not Model!")
-	end
-end
-
 
 Convert = function()
 	local Character = Player.Character or Player.CharacterAdded:Wait()
@@ -83,9 +60,10 @@ function AutoFarm()
 
 	local Chosen = Anthill.Value or GetRandomAnthill()
 	local Character = Player.Character or Player.CharacterAdded:Wait()
+	print(Chosen, typeof(Chosen), Chosen.ClassName)
 	Character:PivotTo(CFrame.new(Chosen.Position))
 	task.wait(0.2)
-	if not Anthill.Value then
+	if Anthill.Value then
 		game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, Chosen)
 	end
 	task.wait(1)
