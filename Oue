@@ -1,0 +1,109 @@
+local Ants = require(game.ReplicatedStorage.Modules.Ants)
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+
+local Player = Players.LocalPlayer
+
+local Leaderstats = Player:WaitForChild("Leaderstats")
+local Vars = Player:WaitForChild("Vars")
+local AllStats = Player:WaitForChild("All_Stats")
+
+local Field = "Cedar"
+local Chosen = "3"
+
+
+local ohString1 = "ActionCall"
+local ohString2 = "Anthill"
+local ohInstance3 = workspace.Anthills[Chosen].Platform
+
+
+for i,v in Ants do
+	setreadonly(v, false)
+	v.Flying = true
+	v.Speed = math.huge
+	v.GatherTime = 0
+	v.ConvertTime = 0
+	table.freeze(v)
+end
+
+local Gather, Convert
+local function GetRandomAnthill()
+	
+end
+local function TweenModel(model : Model, CF : CFrame, info : TweenInfo)
+	if model:IsA("Model") then
+		local CFrameValue = Instance.new("CFrameValue")
+		CFrameValue.Value = model:GetPivot()
+
+		CFrameValue:GetPropertyChangedSignal("Value"):Connect(function()
+			if model.PrimaryPart ~= nil then
+				model:PivotTo(CFrameValue.Value)
+			end
+		end)
+
+		local tween = TweenService:Create(CFrameValue, info, {Value = CF})
+		tween:Play()
+
+		tween.Completed:Connect(function()
+			CFrameValue:Destroy()
+		end)
+	else
+		warn("Error: Provided Object is not Model!")
+	end
+end
+
+
+Convert = function()
+	local Character = Player.Character or Player.CharacterAdded:Wait()
+	local Anthill = Vars:WaitForChild("Anthill") :: ObjectValue
+	if not Anthill or not Anthill.Value then return end
+	local Value = Anthill.Value :: Part
+	Character:PivotTo(Value.CFrame)
+	game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, ohInstance3)
+	repeat task.wait() if not Leaderstats or not Leaderstats.Parent then break end until Leaderstats.Pollen.Value <= 0
+	task.wait(3)
+	Gather()
+end
+Gather = function()
+	local Character = Player.Character or Player.CharacterAdded:Wait()
+	local Field = workspace.Zones.Fields:FindFirstChild(Field)
+	if not Field then return end
+	Character:PivotTo(Field.Position)
+	repeat task.wait() if not Leaderstats or not Leaderstats.Parent or not AllStats or not AllStats.Parent then break end until Leaderstats.Pollen.Value >= AllStats["Total Capacity"].Value
+	task.wait(1)
+	Convert()
+end
+	
+function AutoFarm()
+	task.wait(2)
+	game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, ohInstance3)
+	if Leaderstats.Pollen.Value > 0 then
+		Convert()
+	else
+		Gather()
+	end
+end
+
+AutoFarm()
+workspace.Tokens.ChildAdded:Connect(function(TokenInstance)
+	if not Player.Character or Player.Character.Parent then return end
+	local success, error = pcall(function()
+		TokenInstance.Position = Player.Character.PrimaryPart.Position
+	end)
+end)
+
+workspace.Bubbles.ChildAdded:Connect(function(TokenInstance)
+	if not Player.Character or Player.Character.Parent then return end
+	local success, error = pcall(function()
+		TokenInstance.Position = Player.Character.PrimaryPart.Position
+	end)
+end)
+workspace.Fires.ChildAdded:Connect(function(TokenInstance)
+	if not Player.Character or Player.Character.Parent then return end
+	local success, error = pcall(function()
+		TokenInstance.Position = Player.Character.PrimaryPart.Position
+	end)
+end)
+
+
