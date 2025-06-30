@@ -83,8 +83,9 @@ function AutoFarm()
 					local Time = InBoost[Item].Time
 					if Time then
 						task.defer(function()
-							while task.wait(Time) do
+							while true do
 								game:GetService("ReplicatedStorage").Events.Server_Event:FireServer("UseItem", Item)
+								task.wait(Time)
 							end
 						end)
 					end
