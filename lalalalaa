@@ -10,12 +10,10 @@ local Vars = Player:WaitForChild("Vars")
 local AllStats = Player:WaitForChild("All_Stats")
 
 local Field = "Cedar"
-local Chosen = "3"
 
 
 local ohString1 = "ActionCall"
 local ohString2 = "Anthill"
-local ohInstance3 = workspace.Anthills[Chosen].Platform
 
 
 for i,v in Ants do
@@ -29,7 +27,11 @@ end
 
 local Gather, Convert
 local function GetRandomAnthill()
-	
+	for i,v in workspace.Anthills:GetChildren() do
+		if not v.Platform.Owner.Value then
+			return v.Platform
+		end
+	end
 end
 local function TweenModel(model : Model, CF : CFrame, info : TweenInfo)
 	if model:IsA("Model") then
@@ -60,7 +62,7 @@ Convert = function()
 	if not Anthill or not Anthill.Value then return end
 	local Value = Anthill.Value 
 	Character:PivotTo(Value.CFrame)
-	game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, ohInstance3)
+	game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, Value)
 	repeat task.wait() if not Leaderstats or not Leaderstats.Parent then break end until Leaderstats.Pollen.Value <= 0
 	task.wait(3)
 	Gather()
@@ -74,10 +76,12 @@ Gather = function()
 	task.wait(1)
 	Convert()
 end
-	
+
 function AutoFarm()
 	task.wait(2)
-	game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, ohInstance3)
+	local Chosen = GetRandomAnthill()
+	game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, GetRandomAnthill())
+	task.wait(1)
 	if Leaderstats.Pollen.Value > 0 then
 		Convert()
 	else
