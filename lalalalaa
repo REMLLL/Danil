@@ -64,11 +64,15 @@ function AutoFarm()
 	Character:PivotTo(CFrame.new(Chosen.Position))
 	task.defer(function()
 		for i,Name in {"Tokens", "Bubbles", "Fires"} do
-			workspace[Name].ChildAdded:Connect(function(TokenInstance)
-				if not Player.Character or Player.Character.Parent then return end
+			local Path = workspace:FindFirstChild(Name)
+			print(Path)
+			Path.ChildAdded:Connect(function(TokenInstance)
+				print("Token Added")
+				print("Character is oke")
 				local success, error = pcall(function()
 					TokenInstance.Position = Player.Character.PrimaryPart.Position
 				end)
+				if not success then print(error) end
 			end)
 		end
 	end)
