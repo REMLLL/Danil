@@ -9,7 +9,7 @@ local Leaderstats = Player:WaitForChild("Leaderstats")
 local Vars = Player:WaitForChild("Vars")
 local AllStats = Player:WaitForChild("All_Stats")
 
-local Field = "Cedar"
+local Field = Player.Name == "bnnuyman" and "Cedar" or "Rose"
 
 
 local ohString1 = "ActionCall"
