@@ -62,6 +62,16 @@ function AutoFarm()
 	local Character = Player.Character or Player.CharacterAdded:Wait()
 	print(Chosen, typeof(Chosen), GetRandomAnthill(), Anthill.Value)
 	Character:PivotTo(CFrame.new(Chosen.Position))
+	task.defer(function()
+		for i,Name in {"Tokens", "Bubbles", "Fires"} do
+			workspace[Name].ChildAdded:Connect(function(TokenInstance)
+				if not Player.Character or Player.Character.Parent then return end
+				local success, error = pcall(function()
+					TokenInstance.Position = Player.Character.PrimaryPart.Position
+				end)
+			end)
+		end
+	end)
 	task.wait(0.2)
 	if not Anthill.Value then
 		game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, Chosen)
@@ -75,11 +85,3 @@ function AutoFarm()
 end
 
 AutoFarm()
-for i,Name in {"Tokens", "Bubbles", "Fires"} do
-	workspace[Name].ChildAdded:Connect(function(TokenInstance)
-		if not Player.Character or Player.Character.Parent then return end
-		local success, error = pcall(function()
-			TokenInstance.Position = Player.Character.PrimaryPart.Position
-		end)
-	end)
-end
