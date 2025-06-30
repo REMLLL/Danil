@@ -38,7 +38,7 @@ Convert = function()
 	local Anthill = Vars:WaitForChild("Anthill")
 	if not Anthill or not Anthill.Value then return end
 	local Value = Anthill.Value 
-	Character:PivotTo(CFrame.new(Value.Position + Vector.yAxis * 2) )
+	Character:PivotTo(CFrame.new(Value.Position + Vector3.yAxis * 2) )
 	task.wait(1)
 	game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, Value)
 	repeat task.wait() if not Leaderstats or not Leaderstats.Parent then break end until Leaderstats.Pollen.Value <= 0
