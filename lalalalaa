@@ -71,7 +71,7 @@ Gather = function()
 	local Character = Player.Character or Player.CharacterAdded:Wait()
 	local Field = workspace.Zones.Fields:FindFirstChild(Field)
 	if not Field then return end
-	Character:PivotTo(Field.Position)
+	Character:PivotTo(CFrame.new(Field.Position))
 	repeat task.wait() if not Leaderstats or not Leaderstats.Parent or not AllStats or not AllStats.Parent then break end until Leaderstats.Pollen.Value >= AllStats["Total Capacity"].Value
 	task.wait(1)
 	Convert()
