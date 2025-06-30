@@ -26,8 +26,8 @@ end
 
 local Gather, Convert
 local function GetRandomAnthill()
-	for i,v in workspace.Anthills:GetChildren() do
-		if not v.Platform.Owner.Value then
+	for i,v in workspace.Anthills:GetChildren() do 
+		if v.Platform.Owner.Value == "" then
 			return v.Platform
 		end
 	end
