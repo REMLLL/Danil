@@ -63,7 +63,7 @@ function AutoFarm()
 	print(Chosen, typeof(Chosen), GetRandomAnthill(), Anthill.Value)
 	Character:PivotTo(CFrame.new(Chosen.Position))
 	task.wait(0.2)
-	if Anthill.Value then
+	if not Anthill.Value then
 		game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, Chosen)
 	end
 	task.wait(1)
