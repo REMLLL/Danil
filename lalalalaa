@@ -80,7 +80,10 @@ end
 function AutoFarm()
 	task.wait(2)
 	local Chosen = GetRandomAnthill()
-	game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, GetRandomAnthill())
+	local Character = Player.Character or Player.CharacterAdded:Wait()
+	Character:PivotTo(CFrame.new(Chosen.Position))
+	task.wait(0.2)
+	game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, Chosen)
 	task.wait(1)
 	if Leaderstats.Pollen.Value > 0 then
 		Convert()
