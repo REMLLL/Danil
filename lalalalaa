@@ -61,19 +61,14 @@ function AutoFarm()
 
 	local Chosen = Anthill.Value or GetRandomAnthill()
 	local Character = Player.Character or Player.CharacterAdded:Wait()
-	print(Chosen, typeof(Chosen), GetRandomAnthill(), Anthill.Value)
 	Character:PivotTo(CFrame.new(Chosen.Position))
 	task.defer(function()
 		for i,Name in {"Tokens", "Bubbles", "Fires"} do
 			local Path = workspace:FindFirstChild(Name)
-			print(Path)
 			Path.ChildAdded:Connect(function(TokenInstance)
-				print("Token Added")
-				print("Character is oke")
 				local success, error = pcall(function()
 					TokenInstance.Position = Player.Character.PrimaryPart.Position
 				end)
-				if not success then print(error) end
 			end)
 		end
 	end)
