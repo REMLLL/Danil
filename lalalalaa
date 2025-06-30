@@ -60,7 +60,7 @@ function AutoFarm()
 
 	local Chosen = Anthill.Value or GetRandomAnthill()
 	local Character = Player.Character or Player.CharacterAdded:Wait()
-	print(Chosen, typeof(Chosen))
+	print(Chosen, typeof(Chosen), GetRandomAnthill(), Anthill.Value)
 	Character:PivotTo(CFrame.new(Chosen.Position))
 	task.wait(0.2)
 	if Anthill.Value then
