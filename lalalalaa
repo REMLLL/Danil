@@ -75,7 +75,7 @@ Convert = function()
 	local Anthill = Vars:WaitForChild("Anthill")
 	if not Anthill or not Anthill.Value then return end
 	local Value = Anthill.Value 
-	if #UsedConverters < #AllConverters and Inventory.Ticket.Value >= 1 then
+	if getgenv().insta and #UsedConverters < #AllConverters and Inventory.Ticket.Value >= 1 then
 		local Converter = GetWorkingConverter()
 		game:GetService("ReplicatedStorage").Events.Server_Event:FireServer("InstantConverterUse", workspace.Toys.Converters:FindFirstChild(Converter, true))
 		table.insert(UsedConverters, Converter)
