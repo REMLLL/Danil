@@ -15,6 +15,8 @@ local Player = Players.LocalPlayer
 local Leaderstats = Player:WaitForChild("Leaderstats")
 local Vars = Player:WaitForChild("Vars")
 local AllStats = Player:WaitForChild("All_Stats")
+local Inventory = Player:WaitForChild("Inventory")
+
 local Map = workspace.Map
 local Shops = Map.Shops
 
@@ -73,7 +75,7 @@ Convert = function()
 	local Anthill = Vars:WaitForChild("Anthill")
 	if not Anthill or not Anthill.Value then return end
 	local Value = Anthill.Value 
-	if #UsedConverters < #AllConverters then
+	if #UsedConverters < #AllConverters and Inventory.Ticket.Value >= 1 then
 		local Converter = GetWorkingConverter()
 		game:GetService("ReplicatedStorage").Events.Server_Event:FireServer("InstantConverterUse", workspace.Toys.Converters:FindFirstChild(Converter, true))
 		table.insert(UsedConverters, Converter)
