@@ -109,19 +109,25 @@ function AutoFarm()
 	local Character = Player.Character or Player.CharacterAdded:Wait()
 	Character:PivotTo(CFrame.new(Chosen.Position))
 	task.defer(function()
-
-		for i,Name in {"Tokens", "Bubbles"} do
-			local Path = workspace:FindFirstChild(Name)
-			local Character = Player.Character or Player.CharacterAdded:Wait()
-
-			Path.ChildAdded:Connect(function(v : Part)
-				if not IsConverting and v.Name ~= "Star" and v:GetAttribute("Client") == Player.Name then
-					local suc, err = pcall(function()
-						Character:SetPrimaryPartCFrame(v.CFrame)
-					end)
-				end
+		local Path = workspace:FindFirstChild("Tokens")
+		local Path2 = workspace:FindFirstChild("Bubbles")
+		
+		
+		Path.ChildAdded:Connect(function(v)
+			if not IsConverting and v.Name ~= "Star" and v:GetAttribute("Client") == Player.Name then
+				local suc, err = pcall(function()
+					(Player.Character or Player.CharacterAdded:Wait()):SetPrimaryPartCFrame(v.CFrame)
+				end)
+			end
+		end)
+		
+		
+		Path2.ChildAdded:Connect(function(v)
+			local suc, err = pcall(function()
+				v.Position = (Player.Character or Player.CharacterAdded:Wait()).PrimaryPart.Position
 			end)
-		end
+		end)
+		
 
 
 
