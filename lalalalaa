@@ -27,14 +27,6 @@ local AllConverters = {
 	"Conv2_2",
 	"Conv3_2",
 	"Conv4_2",
-	"Decal",
-	"Model",
-	"Timer",
-	"",
-	"Union",
-	"Texture",
-	"Part"
-
 }
 local UsedConverters = {}
 
