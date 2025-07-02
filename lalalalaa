@@ -115,7 +115,6 @@ function AutoFarm()
 			local Character = Player.Character or Player.CharacterAdded:Wait()
 
 			Path.ChildAdded:Connect(function(v : Part)
-				task.wait()
 				if not IsConverting and v.Name ~= "Star" and v:GetAttribute("Client") == Player.Name then
 					local suc, err = pcall(function()
 						Character:SetPrimaryPartCFrame(v.CFrame)
