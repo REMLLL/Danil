@@ -103,23 +103,29 @@ function AutoFarm()
 	task.defer(function()
 		local Path = workspace:FindFirstChild("Tokens")
 		local Path2 = workspace:FindFirstChild("Bubbles")
-		
-		
+
+
 		Path.ChildAdded:Connect(function(v)
 			if not IsConverting and v.Name ~= "Star" and v:GetAttribute("Client") == Player.Name then
 				local suc, err = pcall(function()
 					(Player.Character or Player.CharacterAdded:Wait()):SetPrimaryPartCFrame(v.CFrame)
 				end)
+
+				task.delay(2, function()
+					if Vars.Field.Value == "" then
+						(Player.Character or Player.CharacterAdded:Wait()):SetPrimaryPartCFrame(workspace.Zones.Fields:FindFirstChild(getgenv().Field).CFrame   )
+					end
+				end)
 			end
 		end)
-		
-		
+
+
 		Path2.ChildAdded:Connect(function(v)
 			local suc, err = pcall(function()
 				v.Position = (Player.Character or Player.CharacterAdded:Wait()).PrimaryPart.Position
 			end)
 		end)
-		
+
 
 
 
