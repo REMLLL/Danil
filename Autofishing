@@ -1,0 +1,62 @@
+
+
+local ohString1 = "Fishing Request"
+
+
+local ohString2 = "Fishing Stop Request"
+
+local ohVector32 = Vector3.new(619.14990234375, 207.83267211914062, 1300.822998046875)
+
+
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+
+local PoleAdded, Fish, StopFishing
+
+local function PrintTable(t, indent)
+	indent = indent or 0
+	local prefix = string.rep("  ", indent)
+	for key, value in pairs(t) do
+		if type(value) == "table" then
+			print(prefix .. tostring(key) .. ":")
+			PrintTable(value, indent + 1)
+		else
+			print(prefix .. tostring(key) .. ": " .. tostring(value))
+		end
+	end
+end
+
+PoleAdded = function(Pole : Model)
+	for i,v in Pole:GetDescendants() do
+		print(v.Name)
+		if v:IsA("BasePart") then
+			v.Anchored = true
+		end
+	end
+	Pole:PivotTo(Player.Character:GetPivot())
+	Pole.Parent = workspace
+	--repeat task.wait() until Pole:GetAttribute("Biting")
+	--print("IM BITING IT")
+	--task.wait(0.1)
+	--StopFishing()
+	--task.wait(0.1)
+	--Fish()
+	Pole:GetAttributeChangedSignal("Biting"):Connect(function()
+		print("IM BITING IT")
+		task.wait(0.1)
+		StopFishing()
+		task.wait(0.1)
+		Fish()
+	end)
+end
+Fish = function()
+	local a = game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, Vector3.new(420.0699157714844, 207.83267211914062, 1135.7181396484375))
+	print(a, table.unpack(a), a[2].Name, a[2].Color)
+	PoleAdded(a[1])
+end
+StopFishing = function()
+	game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString2)
+end
+
+task.wait(1)
+Fish()
