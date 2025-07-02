@@ -1,9 +1,5 @@
 
 
-
-
-
-
 local Ants = require(game.ReplicatedStorage.Modules.Ants)
 
 local Players = game:GetService("Players")
@@ -54,7 +50,7 @@ for i,v in Ants do
 	v.ConvertTime = 0
 	table.freeze(v)
 end
-
+local IsConverting : boolean
 local Gather, Convert
 local function GetRandomAnthill()
 	for i,v in workspace.Anthills:GetChildren() do 
@@ -89,9 +85,8 @@ Convert = function()
 		repeat task.wait() if not Leaderstats or not Leaderstats.Parent then break end until Leaderstats.Pollen.Value <= 0
 	end
 	task.wait(3)
+	IsConverting = false
 	Gather()
-
-
 end
 Gather = function()
 	local Character = Player.Character or Player.CharacterAdded:Wait()
@@ -102,6 +97,7 @@ Gather = function()
 	Character:PivotTo(CFrame.new(Field.Position))
 	repeat task.wait() if not Leaderstats or not Leaderstats.Parent or not AllStats or not AllStats.Parent then break end until Leaderstats.Pollen.Value >= AllStats["Total Capacity"].Value
 	task.wait(1)
+	IsConverting = true
 	Convert()
 end
 
@@ -113,12 +109,17 @@ function AutoFarm()
 	local Character = Player.Character or Player.CharacterAdded:Wait()
 	Character:PivotTo(CFrame.new(Chosen.Position))
 	task.defer(function()
-		for i,Name in {"Tokens", "Bubbles", "Fires"} do
+		
+		for i,Name in {"Tokens", "Bubbles"} do
 			local Path = workspace:FindFirstChild(Name)
-			Path.ChildAdded:Connect(function(TokenInstance)
-				local success, error = pcall(function()
-					TokenInstance.Position = Player.Character.PrimaryPart.Position
-				end)
+			local Character = Player.Character or Player.CharacterAdded:Wait()
+			
+			Path.ChildAdded:Connect(function(v : Part)
+				if not IsConverting and v.Name ~= "Star" then
+					local suc, err = pcall(function()
+						Character:SetPrimaryPartCFrame(v.CFrame)
+					end)
+				end
 			end)
 		end
 
@@ -167,8 +168,10 @@ function AutoFarm()
 
 
 	if Leaderstats.Pollen.Value > 0 then
+		IsConverting = true
 		Convert()
 	else
+		IsConverting = false
 		Gather()
 	end
 end
