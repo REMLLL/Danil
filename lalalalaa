@@ -112,7 +112,7 @@ function AutoFarm()
 				end)
 
 				task.delay(2, function()
-					if Vars.Field.Value == "" then
+					if Vars.Field.Value == "" and not IsConverting then
 						(Player.Character or Player.CharacterAdded:Wait()):SetPrimaryPartCFrame(workspace.Zones.Fields:FindFirstChild(getgenv().Field).CFrame   )
 					end
 				end)
