@@ -121,8 +121,8 @@ Gather = function()
 	if not FieldName then return end
 	local Field = workspace.Zones.Fields:FindFirstChild(FieldName) :: Part
 	if not Field then return end
-	TweenCharacter(Field.Position, 2)
-	task.wait(2)
+	TweenCharacter(Field.Position, 3)
+	task.wait(3)
 	IsConverting = false
 	repeat task.wait() if not Leaderstats or not Leaderstats.Parent or not AllStats or not AllStats.Parent then break end until Leaderstats.Pollen.Value >= AllStats["Total Capacity"].Value
 	IsConverting = true
