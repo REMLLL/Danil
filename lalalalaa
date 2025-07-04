@@ -58,9 +58,6 @@ local function GetWorkingConverter()
 		end
 	end
 end
-local TweenService = game:GetService("TweenService")
-local Players = game:GetService("Players")
-
 local function TweenCharacter(targetPosition: Vector3, Time : number)
 	local player = Players.LocalPlayer
 	local character = player.Character or player.CharacterAdded:Wait()
@@ -81,7 +78,7 @@ local function TweenCharacter(targetPosition: Vector3, Time : number)
 
 	local targetCFrame = CFrame.new(targetPosition) * (cfValue.Value - cfValue.Value.Position)
 
-	local tweenInfo = TweenInfo.new(Time, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	local tweenInfo = TweenInfo.new(Time or 2, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
 	local tween = TweenService:Create(cfValue, tweenInfo, {Value = targetCFrame})
 	tween:Play()
 
@@ -110,7 +107,7 @@ Convert = function()
 		print("BeforeFunction")
 		TweenCharacter(Value.Position + Vector3.yAxis * 2, 6)
 		print("AfterFunction")
-		task.wait(9)
+		task.wait(6)
 		print("AfterTime")
 		game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, Value)
 		repeat task.wait() if not Leaderstats or not Leaderstats.Parent then break end until Leaderstats.Pollen.Value <= 0
@@ -127,7 +124,7 @@ Gather = function()
 	print(1)
 	TweenCharacter(Field.Position, 6)
 	print(2)
-	task.wait(8)
+	task.wait(6)
 	IsConverting = false
 	repeat task.wait() if not Leaderstats or not Leaderstats.Parent or not AllStats or not AllStats.Parent then break end until Leaderstats.Pollen.Value >= AllStats["Total Capacity"].Value
 	IsConverting = true
