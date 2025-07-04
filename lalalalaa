@@ -11,9 +11,10 @@ local AllStats = Player:WaitForChild("All_Stats")
 local Inventory = Player:WaitForChild("Inventory")
 
 local Map = workspace.Map
+local Mobs = workspace.Mobs
+
+
 local Shops = Map.Shops
-
-
 local FleaMarket = Shops.FleaMarket
 local Items = FleaMarket.Items
 local Item1 = Items["1"]
@@ -131,7 +132,15 @@ function AutoFarm()
 
 
 
-
+		Mobs.ChildAdded:Connect(function(v: Model)
+			if v.Name ~= "Mother Firefly" and v.Name ~= "Baby Firefly" then
+				local Humanoid = (Player.Character or Player.CharacterAdded:Wait()):FindFirstChild("Humanoid") :: Humanoid
+				Humanoid.HipHeight = 10
+				v.Destroying:Connect(function()
+					Humanoid.HipHeight = 2
+				end)
+			end
+		end)
 		Item1.Type.Changed:Connect(function()
 			task.wait(2)
 			for ItemSlot, ItemObject in Items:GetChildren() do
