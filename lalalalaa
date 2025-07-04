@@ -133,10 +133,10 @@ function AutoFarm()
 
 
 		Mobs.ChildAdded:Connect(function(v: Model)
-			if v.Name ~= "Mother Firefly" and v.Name ~= "Baby Firefly" then
+			if v.Name ~= "Mother Firefly" and v.Name ~= "Baby Firefly" and not IsConverting then
 				local Humanoid = (Player.Character or Player.CharacterAdded:Wait()):FindFirstChild("Humanoid") :: Humanoid
 				local FieldZone = workspace.Zones.Fields:FindFirstChild(getgenv().Field) :: Part
-				Humanoid.HipHeight = FieldZone.Size.Y - 2
+				Humanoid.HipHeight = FieldZone.Size.Y -0.2
 				v.Destroying:Connect(function()
 					Humanoid.HipHeight = 2
 				end)
