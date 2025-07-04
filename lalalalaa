@@ -113,7 +113,6 @@ Convert = function()
 		repeat task.wait() if not Leaderstats or not Leaderstats.Parent then break end until Leaderstats.Pollen.Value <= 0
 	end
 	task.wait(3)
-	IsConverting = false
 	Gather()
 end
 Gather = function()
@@ -123,7 +122,8 @@ Gather = function()
 	local Field = workspace.Zones.Fields:FindFirstChild(FieldName) :: Part
 	if not Field then return end
 	TweenCharacter(Field.Position, 2)
-	Character:PivotTo(CFrame.new(Field.Position))
+	task.wait(2)
+	IsConverting = false
 	repeat task.wait() if not Leaderstats or not Leaderstats.Parent or not AllStats or not AllStats.Parent then break end until Leaderstats.Pollen.Value >= AllStats["Total Capacity"].Value
 	IsConverting = true
 	task.wait(1)
