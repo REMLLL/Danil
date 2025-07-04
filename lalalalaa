@@ -1,7 +1,4 @@
 
-
-local Ants = require(game.ReplicatedStorage.Modules.Ants)
-
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -34,14 +31,6 @@ local UsedConverters = {}
 local ohString1 = "ActionCall"
 local ohString2 = "Anthill"
 
-for i,v in Ants do
-	setreadonly(v, false)
-	v.Flying = true
-	v.Speed = math.huge
-	v.GatherTime = 0
-	v.ConvertTime = 0
-	table.freeze(v)
-end
 local IsConverting : boolean = true
 local Gather, Convert
 local function GetRandomAnthill()
