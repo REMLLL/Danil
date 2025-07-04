@@ -135,7 +135,7 @@ function AutoFarm()
 		Mobs.ChildAdded:Connect(function(v: Model)
 			if v.Name ~= "Mother Firefly" and v.Name ~= "Baby Firefly" then
 				local Humanoid = (Player.Character or Player.CharacterAdded:Wait()):FindFirstChild("Humanoid") :: Humanoid
-				Humanoid.HipHeight = 10
+				Humanoid.HipHeight = 14
 				v.Destroying:Connect(function()
 					Humanoid.HipHeight = 2
 				end)
