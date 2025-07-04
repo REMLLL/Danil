@@ -2,9 +2,8 @@
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
+local VirtualUser = cloneref(game:GetService("VirtualUser"))
 local Player = Players.LocalPlayer
-
 local Leaderstats = Player:WaitForChild("Leaderstats")
 local Vars = Player:WaitForChild("Vars")
 local AllStats = Player:WaitForChild("All_Stats")
@@ -48,7 +47,17 @@ local function GetWorkingConverter()
 		end
 	end
 end
-
+local function MobExists(MobName : string)
+	if IsConverting then return end
+	if MobName == "Baby Firefly" or MobName == "Mother Firefly" then return end
+	local FieldObject = workspace.Zones.Fields:FindFirstChild(getgenv().Field)
+	if not FieldObject then return end
+	local MobsFolder = FieldObject:FindFirstChild("Mobs")
+	if not MobsFolder then return end
+	for i,v in MobsFolder do
+		if string.find(v.Name, MobName) then return true end
+	end
+end
 
 Convert = function()
 	local Character = Player.Character or Player.CharacterAdded:Wait()
@@ -100,7 +109,14 @@ function AutoFarm()
 	task.defer(function()
 		local Path = workspace:FindFirstChild("Tokens")
 		local Path2 = workspace:FindFirstChild("Bubbles")
-
+		
+		
+		game.Players.LocalPlayer.Idled:Connect(function()
+			VirtualUser:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+			task.wait(1)
+			VirtualUser:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+		end)
+		
 		task.defer(function()
 			while task.wait() do
 				for i,Token in Path:GetChildren() do
@@ -133,13 +149,17 @@ function AutoFarm()
 
 
 		Mobs.ChildAdded:Connect(function(v: Model)
-			if v.Name ~= "Mother Firefly" and v.Name ~= "Baby Firefly" and not IsConverting then
-				local Humanoid = (Player.Character or Player.CharacterAdded:Wait()):FindFirstChild("Humanoid") :: Humanoid
-				local FieldZone = workspace.Zones.Fields:FindFirstChild(getgenv().Field) :: Part
-				Humanoid.HipHeight = FieldZone.Size.Y -0.2
-				v.Destroying:Connect(function()
-					Humanoid.HipHeight = 2
-				end)
+			--local FieldZone = workspace.Zones.Fields:FindFirstChild(getgenv().Field) :: Part
+			if MobExists(v.Name) then
+				--local Humanoid = (Player.Character or Player.CharacterAdded:Wait()):FindFirstChild("Humanoid") :: Humanoid
+				--Humanoid.HipHeight = FieldZone.Size.Y - Vector3.yAxis * 5
+				local ct = 10
+				while true do
+					if not v or not v.Parent or IsConverting or ct <= 0 then break end
+					ct -= .1
+					VirtualUser:TypeKey("s")
+					task.wait(0.1)
+				end
 			end
 		end)
 		Item1.Type.Changed:Connect(function()
