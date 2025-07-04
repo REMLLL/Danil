@@ -107,8 +107,8 @@ Convert = function()
 			table.remove(UsedConverters, table.find(UsedConverters, Converter))
 		end)
 	else
-		Character:PivotTo(CFrame.new(Value.Position + Vector3.yAxis * 2) )
-		task.wait(1)
+		TweenCharacter(Value.Position + Vector3.yAxis * 2, 2)
+		task.wait(2)
 		game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, Value)
 		repeat task.wait() if not Leaderstats or not Leaderstats.Parent then break end until Leaderstats.Pollen.Value <= 0
 	end
@@ -155,7 +155,7 @@ function AutoFarm()
 		end)
 		task.defer(function()
 			while task.wait(1) do
-				
+
 				if Vars.Field.Value == "" and not IsConverting then
 					(Player.Character or Player.CharacterAdded:Wait()):SetPrimaryPartCFrame(workspace.Zones.Fields:FindFirstChild(getgenv().Field).CFrame   )
 				end
@@ -225,4 +225,3 @@ function AutoFarm()
 end
 
 AutoFarm()
- 
