@@ -42,7 +42,7 @@ for i,v in Ants do
 	v.ConvertTime = 0
 	table.freeze(v)
 end
-local IsConverting : boolean
+local IsConverting : boolean = true
 local Gather, Convert
 local function GetRandomAnthill()
 	for i,v in workspace.Anthills:GetChildren() do 
@@ -107,8 +107,11 @@ Convert = function()
 			table.remove(UsedConverters, table.find(UsedConverters, Converter))
 		end)
 	else
+		print("BeforeFunction")
 		TweenCharacter(Value.Position + Vector3.yAxis * 2, 6)
+		print("AfterFunction")
 		task.wait(6)
+		print("AfterTime")
 		game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, Value)
 		repeat task.wait() if not Leaderstats or not Leaderstats.Parent then break end until Leaderstats.Pollen.Value <= 0
 	end
