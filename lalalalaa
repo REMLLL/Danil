@@ -58,6 +58,39 @@ local function GetWorkingConverter()
 		end
 	end
 end
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+
+local function TweenCharacter(targetPosition: Vector3, Time : number)
+	local player = Players.LocalPlayer
+	local character = player.Character or player.CharacterAdded:Wait()
+
+	local model = character
+	local root = model:FindFirstChild("HumanoidRootPart")
+	if not root then return end
+
+
+	local cfValue = Instance.new("CFrameValue")
+	cfValue.Value = model:GetPivot()
+
+	local connection
+	connection = cfValue:GetPropertyChangedSignal("Value"):Connect(function()
+		model:PivotTo(cfValue.Value)
+	end)
+
+
+	local targetCFrame = CFrame.new(targetPosition) * (cfValue.Value - cfValue.Value.Position)
+
+	local tweenInfo = TweenInfo.new(Time or 2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	local tween = TweenService:Create(cfValue, tweenInfo, {Value = targetCFrame})
+	tween:Play()
+
+	tween.Completed:Connect(function()
+		connection:Disconnect()
+		cfValue:Destroy()
+	end)
+end
+
 Convert = function()
 	local Character = Player.Character or Player.CharacterAdded:Wait()
 	local Anthill = Vars:WaitForChild("Anthill")
@@ -65,7 +98,10 @@ Convert = function()
 	local Value = Anthill.Value 
 	if getgenv().insta and #UsedConverters < #AllConverters and Inventory.Ticket.Value >= 1 then
 		local Converter = GetWorkingConverter()
-		game:GetService("ReplicatedStorage").Events.Server_Event:FireServer("InstantConverterUse", workspace.Toys.Converters:FindFirstChild(Converter, true))
+		local Object = workspace.Toys.Converters:FindFirstChild(Converter)
+		Character:PivotTo(CFrame.new(Object.Position + Vector3.yAxis * 2))
+		task.wait(.2)
+		game:GetService("ReplicatedStorage").Events.Server_Event:FireServer("InstantConverterUse", Object)
 		table.insert(UsedConverters, Converter)
 		task.delay(900, function()
 			table.remove(UsedConverters, table.find(UsedConverters, Converter))
@@ -84,8 +120,9 @@ Gather = function()
 	local Character = Player.Character or Player.CharacterAdded:Wait()
 	local FieldName = getgenv().Field
 	if not FieldName then return end
-	local Field = workspace.Zones.Fields:FindFirstChild(FieldName)
+	local Field = workspace.Zones.Fields:FindFirstChild(FieldName) :: Part
 	if not Field then return end
+	TweenCharacter(Field.Position, 2)
 	Character:PivotTo(CFrame.new(Field.Position))
 	repeat task.wait() if not Leaderstats or not Leaderstats.Parent or not AllStats or not AllStats.Parent then break end until Leaderstats.Pollen.Value >= AllStats["Total Capacity"].Value
 	IsConverting = true
@@ -104,26 +141,33 @@ function AutoFarm()
 		local Path = workspace:FindFirstChild("Tokens")
 		local Path2 = workspace:FindFirstChild("Bubbles")
 
-
-		Path.ChildAdded:Connect(function(v)
-			if not IsConverting and v.Name ~= "Star" and v:GetAttribute("Client") == Player.Name then
-				local suc, err = pcall(function()
-					(Player.Character or Player.CharacterAdded:Wait()):SetPrimaryPartCFrame(v.CFrame)
-				end)
-
-				task.delay(2, function()
-					if Vars.Field.Value == "" and not IsConverting then
-						(Player.Character or Player.CharacterAdded:Wait()):SetPrimaryPartCFrame(workspace.Zones.Fields:FindFirstChild(getgenv().Field).CFrame   )
+		task.defer(function()
+			while task.wait() do
+				for i,Token in Path:GetChildren() do
+					if not IsConverting and Token.Name ~= "Star" and Token:GetAttribute("Client") == Player.Name then
+						local suc, err = pcall(function()
+							(Player.Character or Player.CharacterAdded:Wait()):SetPrimaryPartCFrame(Token.CFrame)
+						end)
+						task.wait(.03)
 					end
-				end)
+				end
 			end
 		end)
-
-
-		Path2.ChildAdded:Connect(function(v)
-			local suc, err = pcall(function()
-				v.Position = (Player.Character or Player.CharacterAdded:Wait()).PrimaryPart.Position
-			end)
+		task.defer(function()
+			while task.wait(1) do
+				
+				if Vars.Field.Value == "" and not IsConverting then
+					(Player.Character or Player.CharacterAdded:Wait()):SetPrimaryPartCFrame(workspace.Zones.Fields:FindFirstChild(getgenv().Field).CFrame   )
+				end
+			end
+		end)
+		task.defer(function()
+			while true do
+				for i, bubble in Path2:GetChildren() do
+					bubble.Position = (Player.Character or Player.CharacterAdded:Wait()).PrimaryPart.Position
+				end
+				task.wait(.01)
+			end
 		end)
 
 
@@ -181,3 +225,4 @@ function AutoFarm()
 end
 
 AutoFarm()
+ 
