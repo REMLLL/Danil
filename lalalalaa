@@ -58,35 +58,7 @@ local function GetWorkingConverter()
 		end
 	end
 end
-local function TweenCharacter(targetPosition: Vector3, Time : number)
-	local player = Players.LocalPlayer
-	local character = player.Character or player.CharacterAdded:Wait()
 
-	local model = character
-	local root = model:FindFirstChild("HumanoidRootPart")
-	if not root then return end
-
-
-	local cfValue = Instance.new("CFrameValue")
-	cfValue.Value = model:GetPivot()
-
-	local connection
-	connection = cfValue:GetPropertyChangedSignal("Value"):Connect(function()
-		model:PivotTo(cfValue.Value)
-	end)
-
-
-	local targetCFrame = CFrame.new(targetPosition) * (cfValue.Value - cfValue.Value.Position)
-
-	local tweenInfo = TweenInfo.new(Time or 2, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
-	local tween = TweenService:Create(cfValue, tweenInfo, {Value = targetCFrame})
-	tween:Play()
-
-	tween.Completed:Connect(function()
-		connection:Disconnect()
-		cfValue:Destroy()
-	end)
-end
 
 Convert = function()
 	local Character = Player.Character or Player.CharacterAdded:Wait()
@@ -104,10 +76,8 @@ Convert = function()
 			table.remove(UsedConverters, table.find(UsedConverters, Converter))
 		end)
 	else
-		print("BeforeFunction")
-		TweenCharacter(Value.Position + Vector3.yAxis * 2, 6)
-		print("AfterFunction")
-		task.wait(6)
+		Character:PivotTo(CFrame.new(Value.Position + Vector3.yAxis * 3))
+		task.wait(1.3)
 		print("AfterTime")
 		game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, Value)
 		repeat task.wait() if not Leaderstats or not Leaderstats.Parent then break end until Leaderstats.Pollen.Value <= 0
@@ -121,10 +91,8 @@ Gather = function()
 	if not FieldName then return end
 	local Field = workspace.Zones.Fields:FindFirstChild(FieldName) :: Part
 	if not Field then return end
-	print(1)
-	TweenCharacter(Field.Position, 6)
-	print(2)
-	task.wait(6)
+	Character:PivotTo(CFrame.new(Field.Position))
+	task.wait(1)
 	IsConverting = false
 	repeat task.wait() if not Leaderstats or not Leaderstats.Parent or not AllStats or not AllStats.Parent then break end until Leaderstats.Pollen.Value >= AllStats["Total Capacity"].Value
 	IsConverting = true
