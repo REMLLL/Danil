@@ -3,7 +3,12 @@ local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local VirtualUser = cloneref(game:GetService("VirtualUser"))
+
+
+
 local Player = Players.LocalPlayer
+
+
 local Leaderstats = Player:WaitForChild("Leaderstats")
 local Vars = Player:WaitForChild("Vars")
 local AllStats = Player:WaitForChild("All_Stats")
@@ -33,6 +38,7 @@ local ohString2 = "Anthill"
 
 local IsConverting : boolean = true
 local Gather, Convert
+
 local function GetRandomAnthill()
 	for i,v in workspace.Anthills:GetChildren() do 
 		if v.Platform.Owner.Value == "" then
@@ -40,6 +46,7 @@ local function GetRandomAnthill()
 		end
 	end
 end
+
 local function GetWorkingConverter()
 	for i,v in AllConverters do
 		if not table.find(UsedConverters, v) then
@@ -47,6 +54,7 @@ local function GetWorkingConverter()
 		end
 	end
 end
+
 local function MobExists(MobName : string)
 	if IsConverting then return end
 	if MobName == "Baby Firefly" or MobName == "Mother Firefly" then return end
@@ -58,6 +66,8 @@ local function MobExists(MobName : string)
 		if string.find(v.Name, MobName) then return true end
 	end
 end
+
+
 
 Convert = function()
 	local Character = Player.Character or Player.CharacterAdded:Wait()
@@ -84,6 +94,7 @@ Convert = function()
 	task.wait(3)
 	Gather()
 end
+
 Gather = function()
 	local Character = Player.Character or Player.CharacterAdded:Wait()
 	local FieldName = getgenv().Field
@@ -131,7 +142,7 @@ function AutoFarm()
 		end)
 		task.defer(function()
 			while task.wait(1) do
-
+				
 				if Vars.Field.Value == "" and not IsConverting then
 					(Player.Character or Player.CharacterAdded:Wait()):SetPrimaryPartCFrame(workspace.Zones.Fields:FindFirstChild(getgenv().Field).CFrame   )
 				end
@@ -149,19 +160,17 @@ function AutoFarm()
 
 
 		Mobs.ChildAdded:Connect(function(v: Model)
-			print("Added")
-			--local FieldZone = workspace.Zones.Fields:FindFirstChild(getgenv().Field) :: Part
+			local FieldZone = workspace.Zones.Fields:FindFirstChild(getgenv().Field) :: Part
 			if MobExists(v.Name) then
-				print("MobExists")
-				--local Humanoid = (Player.Character or Player.CharacterAdded:Wait()):FindFirstChild("Humanoid") :: Humanoid
+				local Humanoid = (Player.Character or Player.CharacterAdded:Wait()):FindFirstChild("Humanoid") :: Humanoid
 				--Humanoid.HipHeight = FieldZone.Size.Y - Vector3.yAxis * 5
 				local ct = 10
 				while true do
 					if not v or not v.Parent or IsConverting or ct <= 0 then break end
-					ct -= .1
-					print(ct)
+					Humanoid:MoveTo(FieldZone.Position + Vector3.zAxis * -(FieldZone.Size.X * 0.75))
+					ct -= 1
 					VirtualUser:TypeKey("s")
-					task.wait(0.1)
+					task.wait(1)
 				end
 			end
 		end)
