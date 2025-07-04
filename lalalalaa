@@ -107,8 +107,8 @@ Convert = function()
 			table.remove(UsedConverters, table.find(UsedConverters, Converter))
 		end)
 	else
-		TweenCharacter(Value.Position + Vector3.yAxis * 2, 2)
-		task.wait(2)
+		TweenCharacter(Value.Position + Vector3.yAxis * 2, 6)
+		task.wait(6)
 		game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, Value)
 		repeat task.wait() if not Leaderstats or not Leaderstats.Parent then break end until Leaderstats.Pollen.Value <= 0
 	end
@@ -121,8 +121,10 @@ Gather = function()
 	if not FieldName then return end
 	local Field = workspace.Zones.Fields:FindFirstChild(FieldName) :: Part
 	if not Field then return end
-	TweenCharacter(Field.Position, 3)
-	task.wait(3)
+	print(1)
+	TweenCharacter(Field.Position, 6)
+	print(2)
+	task.wait(6)
 	IsConverting = false
 	repeat task.wait() if not Leaderstats or not Leaderstats.Parent or not AllStats or not AllStats.Parent then break end until Leaderstats.Pollen.Value >= AllStats["Total Capacity"].Value
 	IsConverting = true
