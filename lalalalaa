@@ -55,10 +55,13 @@ end
 
 local function MobExists(MobName : string)
 	if MobName == "Baby Firefly" or MobName == "Mother Firefly" then return end
+	print("Mob Is Valid")
 	local FieldObject = workspace.Zones.Fields:FindFirstChild(getgenv().Field)
 	if not FieldObject then return end
+	print("Object Found")
 	local MobsFolder = FieldObject:FindFirstChild("Mobs")
 	if not MobsFolder then return end
+	print("MobsFolder Found")
 	for i,v in MobsFolder:GetChildren() do
 		if string.find(v.Name, MobName) then return true end
 	end
@@ -181,7 +184,7 @@ function AutoFarm()
 			local Humanoid = (Player.Character or Player.CharacterAdded:Wait()):FindFirstChild("Humanoid") :: Humanoid
 			--Humanoid.HipHeight = FieldZone.Size.Y - Vector3.yAxis * 5
 			while true do
-				if not v or not v.Parent or IsConverting then break end
+				if not v or not v.Parent then break end
 				Humanoid:MoveTo(FieldZone.Position + Vector3.zAxis * -(FieldZone.Size.X * 0.75))
 				task.wait(1)
 			end
