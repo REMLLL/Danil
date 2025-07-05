@@ -86,8 +86,7 @@ Convert = function()
 		end)
 	else
 		Character:PivotTo(CFrame.new(Value.Position + Vector3.yAxis * 3))
-		task.wait(1.3)
-		print("AfterTime")
+		task.wait(2.5)
 		game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, Value)
 		repeat task.wait() if not Leaderstats or not Leaderstats.Parent then break end until Leaderstats.Pollen.Value <= 0
 	end
