@@ -54,7 +54,6 @@ local function GetWorkingConverter()
 end
 
 local function MobExists(MobName : string)
-	if IsConverting then return end
 	if MobName == "Baby Firefly" or MobName == "Mother Firefly" then return end
 	local FieldObject = workspace.Zones.Fields:FindFirstChild(getgenv().Field)
 	if not FieldObject then return end
