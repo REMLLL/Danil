@@ -2,8 +2,6 @@
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local VirtualUser = cloneref(game:GetService("VirtualUser"))
-
 
 
 local Player = Players.LocalPlayer
@@ -119,14 +117,14 @@ function AutoFarm()
 	task.defer(function()
 		local Path = workspace:FindFirstChild("Tokens")
 		local Path2 = workspace:FindFirstChild("Bubbles")
-		
-		
+
+
 		game.Players.LocalPlayer.Idled:Connect(function()
 			VirtualUser:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
 			task.wait(1)
 			VirtualUser:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
 		end)
-		
+
 		task.defer(function()
 			while task.wait() do
 				for i,Token in Path:GetChildren() do
@@ -141,7 +139,7 @@ function AutoFarm()
 		end)
 		task.defer(function()
 			while task.wait(1) do
-				
+
 				if Vars.Field.Value == "" and not IsConverting then
 					(Player.Character or Player.CharacterAdded:Wait()):SetPrimaryPartCFrame(workspace.Zones.Fields:FindFirstChild(getgenv().Field).CFrame   )
 				end
@@ -153,33 +151,6 @@ function AutoFarm()
 					bubble.Position = (Player.Character or Player.CharacterAdded:Wait()).PrimaryPart.Position
 				end
 				task.wait(.01)
-			end
-		end)
-
-
-
-		Mobs.ChildAdded:Connect(function(v: Model)
-			local FieldZone = workspace.Zones.Fields:FindFirstChild(getgenv().Field) :: Part
-			if MobExists(v.Name) then
-				local Humanoid = (Player.Character or Player.CharacterAdded:Wait()):FindFirstChild("Humanoid") :: Humanoid
-				--Humanoid.HipHeight = FieldZone.Size.Y - Vector3.yAxis * 5
-				while true do
-					if not v or not v.Parent or IsConverting then break end
-					Humanoid:MoveTo(FieldZone.Position + Vector3.zAxis * -(FieldZone.Size.X * 0.75))
-					task.wait(1)
-				end
-			end
-		end)
-		Item1.Type.Changed:Connect(function()
-			task.wait(2)
-			for ItemSlot, ItemObject in Items:GetChildren() do
-
-				task.defer(function()
-					for ItemLimit = 1, ItemObject.Limit.Value do
-
-						game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer("ShopPurchaseRequest", "FleaMarket", ItemSlot)
-					end
-				end)
 			end
 		end)
 
@@ -203,6 +174,31 @@ function AutoFarm()
 			end
 		end
 
+	end)
+	
+	Mobs.ChildAdded:Connect(function(v: Model)
+		local FieldZone = workspace.Zones.Fields:FindFirstChild(getgenv().Field) :: Part
+		if MobExists(v.Name) then
+			local Humanoid = (Player.Character or Player.CharacterAdded:Wait()):FindFirstChild("Humanoid") :: Humanoid
+			--Humanoid.HipHeight = FieldZone.Size.Y - Vector3.yAxis * 5
+			while true do
+				if not v or not v.Parent or IsConverting then break end
+				Humanoid:MoveTo(FieldZone.Position + Vector3.zAxis * -(FieldZone.Size.X * 0.75))
+				task.wait(1)
+			end
+		end
+	end)
+	Item1.Type.Changed:Connect(function()
+		task.wait(2)
+		for ItemSlot, ItemObject in Items:GetChildren() do
+
+			task.defer(function()
+				for ItemLimit = 1, ItemObject.Limit.Value do
+
+					game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer("ShopPurchaseRequest", "FleaMarket", ItemSlot)
+				end
+			end)
+		end
 	end)
 
 	task.wait(0.2)
