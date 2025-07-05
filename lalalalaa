@@ -164,12 +164,9 @@ function AutoFarm()
 			if MobExists(v.Name) then
 				local Humanoid = (Player.Character or Player.CharacterAdded:Wait()):FindFirstChild("Humanoid") :: Humanoid
 				--Humanoid.HipHeight = FieldZone.Size.Y - Vector3.yAxis * 5
-				local ct = 10
 				while true do
-					if not v or not v.Parent or IsConverting or ct <= 0 then break end
+					if not v or not v.Parent or IsConverting then break end
 					Humanoid:MoveTo(FieldZone.Position + Vector3.zAxis * -(FieldZone.Size.X * 0.75))
-					ct -= 1
-					VirtualUser:TypeKey("s")
 					task.wait(1)
 				end
 			end
