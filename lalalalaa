@@ -40,7 +40,7 @@ local IsConverting = true
 
 local function TweenTo(CF : CFrame)
 	if typeof(CF) ~= "CFrame" then return end
-	
+	--if typeof(Tween) == "Tween" and Tween.PlaybackState ~= Enum.PlaybackState.Completed then return end
 	local Character = Player.Character
 	if not Character then
 		Character = Player.CharacterAdded:Wait()
@@ -59,9 +59,9 @@ local function TweenTo(CF : CFrame)
 	--	model:PivotTo(CFrameValue.Value)
 	--end)
 	--print("3")
-	local tween = TweenService:Create(CFrameValue, TweenInfo.new((CF.Position - Character.PrimaryPart.Position).Magnitude / AllStats.Movespeed.Value  ), {Value = CF})
-	tween:Play()
-	tween.Completed:Wait()
+	Tween = TweenService:Create(CFrameValue, TweenInfo.new((CF.Position - Character.PrimaryPart.Position).Magnitude / AllStats.Movespeed.Value  ), {Value = CF})
+	Tween:Play()
+	Tween.Completed:Wait()
 	CFrameValue:Destroy()
 
 
@@ -120,6 +120,7 @@ local function ByManual(Value : Part)
 	TweenTo(CFrame.new(Value.Position + Vector3.yAxis * 2))
 	game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, Value)
 	repeat task.wait() if not Leaderstats or not Leaderstats.Parent then break end until Leaderstats.Pollen.Value <= 0
+	task.wait(3)
 end
 
 Convert = function()
@@ -133,7 +134,7 @@ Convert = function()
 	else
 		ByManual(Value)
 	end
-
+	task.wait(3)
 end
 
 Gather = function()
