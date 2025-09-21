@@ -117,7 +117,7 @@ local function ByManual(Value)
 	local Character = Player.Character
 	if not Character then return end
 
-
+	TweenTo(workspace.Anthills[Value].Platform.CFrame)
 	game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, Value)
 	repeat task.wait() if not Leaderstats or not Leaderstats.Parent then break end until Leaderstats.Pollen.Value <= 0
 end
@@ -150,6 +150,7 @@ Gather = function()
 
 	task.wait(1)
 	IsConverting = false
+	print("REPEAT LOOP STARTED FOR GATHERING.")
 	repeat task.wait() if not Leaderstats or not Leaderstats.Parent or not AllStats or not AllStats.Parent then break end until Leaderstats.Pollen.Value >= AllStats["Total Capacity"].Value
 	IsConverting = true
 	task.wait(1)
@@ -180,6 +181,7 @@ function AutoFarm()
 				for i,Token in Path:GetChildren() do
 					if not IsConverting and Token.Name ~= "Star" and Token:GetAttribute("Client") == Player.Name then
 						local suc, err = pcall(function()
+							
 							(Player.Character or Player.CharacterAdded:Wait()):SetPrimaryPartCFrame(Token.CFrame)
 						end)
 						task.wait(.03)
@@ -191,7 +193,8 @@ function AutoFarm()
 			while task.wait(1) do
 
 				if Vars.Field.Value == "" and not IsConverting then
-					(Player.Character or Player.CharacterAdded:Wait()):SetPrimaryPartCFrame(workspace.Zones.Fields:FindFirstChild(getgenv().Field).CFrame   )
+					TweenTo(workspace.Zones.Fields:FindFirstChild(getgenv().Field).CFrame)
+					--(Player.Character or Player.CharacterAdded:Wait()):SetPrimaryPartCFrame(workspace.Zones.Fields:FindFirstChild(getgenv().Field).CFrame   )
 				end
 			end
 		end)
@@ -258,11 +261,15 @@ function AutoFarm()
 	task.wait(1)
 
 	while task.wait() do
+		print("LOOPING")
 		if not Leaderstats or not Leaderstats:FindFirstChild("Pollen") then break end
+		print("LEADERSTAT EXISTS")
 		if Leaderstats.Pollen.Value > 0 then
+			print("CONVERTING")
 			IsConverting = true
 			Convert()
 		else
+			print("GATHERING")
 			IsConverting = false
 			Gather()
 		end
