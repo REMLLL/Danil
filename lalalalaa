@@ -113,11 +113,11 @@ local function ByInstantConverter()
 		table.remove(UsedConverters, table.find(UsedConverters, Converter))
 	end)
 end
-local function ByManual(Value)
+local function ByManual(Value : Part)
 	local Character = Player.Character
 	if not Character then return end
 
-	TweenTo(workspace.Anthills[Value].Platform.CFrame)
+	TweenTo(CFrame.new(Value.Position + Vector3.yAxis * 2))
 	game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, Value)
 	repeat task.wait() if not Leaderstats or not Leaderstats.Parent then break end until Leaderstats.Pollen.Value <= 0
 end
