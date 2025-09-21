@@ -271,7 +271,7 @@ function AutoFarm()
 			Convert()
 		else
 			print("GATHERING")
-			IsConverting = false
+
 			Gather()
 		end
 	end
