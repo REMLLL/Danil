@@ -2,7 +2,7 @@
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
+local VirtualUser = game:GetService("VirtualUser")
 
 local Player = Players.LocalPlayer
 
@@ -21,6 +21,7 @@ local FleaMarket = Shops.FleaMarket
 local Items = FleaMarket.Items
 local Item1 = Items["1"]
 
+local Tween : Tween -- может пригодиться позже
 
 local AllConverters = {
 	"Conv1_2",
@@ -34,8 +35,19 @@ local UsedConverters = {}
 local ohString1 = "ActionCall"
 local ohString2 = "Anthill"
 
-local IsConverting : boolean = true
-local Gather, Convert
+local IsConverting = true
+
+
+local function TweenTo(Position : Vector3, Mag : number)
+	local Character = Player.Character
+	if not Character then
+		Character = Player.CharacterAdded:Wait()
+	end
+	Mag = Mag or 1.4
+	Tween = TweenService:Create(Character.PrimaryPart, TweenInfo.new((Position - Character.PrimaryPart.Position).Magnitude / 16          ), {Position = Position})
+	Tween:Play()
+	Tween.Completed:Wait()
+end
 
 local function GetRandomAnthill()
 	for i,v in workspace.Anthills:GetChildren() do 
@@ -67,48 +79,63 @@ local function MobExists(MobName : string)
 	end
 end
 
+local function ByInstantConverter()
+	local Character = Player.Character
+	if not Character then return end
+	
+	local Converter = GetWorkingConverter()
+	local Object = workspace.Toys.Converters:FindFirstChild(Converter)
+	
+	TweenTo(Object.Position + Vector3.yAxis * 2)
+	
+	task.wait(.2)
+	game:GetService("ReplicatedStorage").Events.Server_Event:FireServer("InstantConverterUse", Object)
+	table.insert(UsedConverters, Converter)
+	task.delay(900, function()
+		table.remove(UsedConverters, table.find(UsedConverters, Converter))
+	end)
+end
+local function ByManual(Value)
+	local Character = Player.Character
+	if not Character then return end
+	
 
+	game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, Value)
+	repeat task.wait() if not Leaderstats or not Leaderstats.Parent then break end until Leaderstats.Pollen.Value <= 0
+end
 
 Convert = function()
 	local Character = Player.Character or Player.CharacterAdded:Wait()
 	local Anthill = Vars:WaitForChild("Anthill")
 	if not Anthill or not Anthill.Value then return end
 	local Value = Anthill.Value 
+
 	if getgenv().insta and #UsedConverters < #AllConverters and Inventory.Ticket.Value >= 1 then
-		local Converter = GetWorkingConverter()
-		local Object = workspace.Toys.Converters:FindFirstChild(Converter)
-		Character:PivotTo(CFrame.new(Object.Position + Vector3.yAxis * 2))
-		task.wait(.2)
-		game:GetService("ReplicatedStorage").Events.Server_Event:FireServer("InstantConverterUse", Object)
-		table.insert(UsedConverters, Converter)
-		task.delay(900, function()
-			table.remove(UsedConverters, table.find(UsedConverters, Converter))
-		end)
+		ByInstantConverter()
 	else
-		Character:PivotTo(CFrame.new(Value.Position + Vector3.yAxis * 2))
-		task.wait(2.5)
-		Character:PivotTo(CFrame.new(Value.Position + Vector3.yAxis * 2))
-		task.wait(2.5)
-		game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, Value)
-		repeat task.wait() if not Leaderstats or not Leaderstats.Parent then break end until Leaderstats.Pollen.Value <= 0
+		ByManual(Value)
 	end
-	task.wait(3)
-	Gather()
+
 end
 
 Gather = function()
 	local Character = Player.Character or Player.CharacterAdded:Wait()
 	local FieldName = getgenv().Field
+	
+	
 	if not FieldName then return end
 	local Field = workspace.Zones.Fields:FindFirstChild(FieldName) :: Part
+	
 	if not Field then return end
-	Character:PivotTo(CFrame.new(Field.Position))
+	
+	TweenTo(Field.Position)
+	
 	task.wait(1)
 	IsConverting = false
 	repeat task.wait() if not Leaderstats or not Leaderstats.Parent or not AllStats or not AllStats.Parent then break end until Leaderstats.Pollen.Value >= AllStats["Total Capacity"].Value
 	IsConverting = true
 	task.wait(1)
-	Convert()
+
 end
 
 function AutoFarm()
@@ -117,7 +144,8 @@ function AutoFarm()
 
 	local Chosen = Anthill.Value or GetRandomAnthill()
 	local Character = Player.Character or Player.CharacterAdded:Wait()
-	Character:PivotTo(CFrame.new(Chosen.Position))
+	
+	TweenTo(Chosen.Position)
 	task.defer(function()
 		local Path = workspace:FindFirstChild("Tokens")
 		local Path2 = workspace:FindFirstChild("Bubbles")
@@ -179,7 +207,7 @@ function AutoFarm()
 		end
 
 	end)
-	
+
 	Mobs.ChildAdded:Connect(function(v: Model)
 		local FieldZone = workspace.Zones.Fields:FindFirstChild(getgenv().Field) :: Part
 		if MobExists(v.Name) then
@@ -211,14 +239,17 @@ function AutoFarm()
 	end
 	task.wait(1)
 
-
-	if Leaderstats.Pollen.Value > 0 then
-		IsConverting = true
-		Convert()
-	else
-		IsConverting = false
-		Gather()
+	while task.wait() do
+		if not Leaderstats or not Leaderstats:FindFirstChild("Pollen") then break end
+		if Leaderstats.Pollen.Value > 0 then
+			IsConverting = true
+			Convert()
+		else
+			IsConverting = false
+			Gather()
+		end
 	end
+
 end
 
 AutoFarm()
