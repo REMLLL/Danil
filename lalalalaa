@@ -54,7 +54,7 @@ local function TweenTo(CF : CFrame)
 		Character:PivotTo(CFrameValue.Value)
 
 	end)
-	
+
 	--CFrameValue:GetPropertyChangedSignal("Value"):Connect(function()
 	--	model:PivotTo(CFrameValue.Value)
 	--end)
@@ -117,10 +117,7 @@ local function ByManual(Value : Part)
 	local Character = Player.Character
 	if not Character then return end
 
-	TweenTo(CFrame.new(Value.Position + Vector3.yAxis * 2))
-	game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, Value)
-	repeat task.wait() if not Leaderstats or not Leaderstats.Parent then break end until Leaderstats.Pollen.Value <= 0
-	task.wait(3)
+	Character:BreakJoints()
 end
 
 Convert = function()
@@ -182,7 +179,7 @@ function AutoFarm()
 				for i,Token in Path:GetChildren() do
 					if not IsConverting and Token.Name ~= "Star" and Token:GetAttribute("Client") == Player.Name then
 						local suc, err = pcall(function()
-							
+
 							(Player.Character or Player.CharacterAdded:Wait()):SetPrimaryPartCFrame(Token.CFrame)
 						end)
 						task.wait(.03)
