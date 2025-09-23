@@ -188,7 +188,7 @@ local function UltraFish()
 	local Character = Player.Character
 	if not Character then IsConverting = false return end
 	Character.PrimaryPart.Anchored = true
-	
+
 	while true do
 		if Inventory.Worm.Value <= 0 then break end
 		local F = Fish()
@@ -324,7 +324,7 @@ function AutoFarm()
 		print("LOOPING")
 		if not Leaderstats or not Leaderstats:FindFirstChild("Pollen") then break end
 		print("LEADERSTAT EXISTS")
-		if Inventory.Worm.Value >= 300 then
+		if getgenv().ShouldFish and Inventory.Worm.Value >= 300 then
 			UltraFish()
 		elseif Leaderstats.Pollen.Value <= 0 then
 			print("GATHERING")
