@@ -183,7 +183,7 @@ StopFishing = function()
 	game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer("StopFishingRequest")
 end
 local function UltraFish()
-	TweenTo(CFrame.new(883.232, 263.747, 1105.05))
+	TweenTo(CFrame.new(883.232, 260.747, 1105.05))
 	while true do
 		if Inventory.Worm.Value <= 0 then break end
 		local F = Fish()
