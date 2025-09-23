@@ -319,11 +319,11 @@ function AutoFarm()
 		print("LEADERSTAT EXISTS")
 		if Inventory.Worm.Value >= 300 then
 			UltraFish()
-		elseif Leaderstats.Pollen.Value > 0 then
+		elseif Leaderstats.Pollen.Value <= 0 then
 			print("GATHERING")
 
 			Gather()
-		elseif Leaderstats.Pollen.Value <= 0 then
+		else
 			print("CONVERTING")
 			IsConverting = true
 			Convert()
