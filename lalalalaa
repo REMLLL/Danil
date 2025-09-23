@@ -12,6 +12,7 @@ local Vars = Player:WaitForChild("Vars")
 local AllStats = Player:WaitForChild("All_Stats")
 local Inventory = Player:WaitForChild("Inventory")
 
+
 local Map = workspace.Map
 local Mobs = workspace.Mobs
 
@@ -156,6 +157,46 @@ Gather = function()
 
 end
 
+local PoleAdded, Fish, StopFishing
+
+
+
+PoleAdded = function(Pole : Model)
+	for i,v in Pole:GetDescendants() do
+		print(v.Name)
+		if v:IsA("BasePart") then
+			v.Anchored = true
+		end
+	end
+	Pole:PivotTo(Player.Character:GetPivot())
+	Pole.Parent = workspace
+
+	return Pole
+end
+Fish = function()
+	local a = game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer("FishingRequest", Vector3.new(841.4443359375, 223.47323608398438, 1135.06298828125))
+	print(a, typeof(a) == "table" and table.unpack(a) or "Not a table")
+	if typeof(a) ~= "table" then return end
+	return a
+end
+StopFishing = function()
+	game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer("StopFishingRequest")
+end
+local function UltraFish()
+
+	while true do
+		if Inventory.Worm.Value <= 0 then break end
+		local F = Fish
+		if not F then continue end
+		local Polee = PoleAdded(F[1])
+		Polee:GetAttributeChangedSignal("Biting"):Wait()
+		print("IM BITING IT")
+		task.wait(0.1)
+		StopFishing()
+		task.wait(0.1)
+
+	end
+end
 function AutoFarm()
 	task.wait(2)
 	local Anthill = Vars:WaitForChild("Anthill")
@@ -216,7 +257,7 @@ function AutoFarm()
 				game:GetService("ReplicatedStorage").Events.Server_Event:FireServer("UseTool", 1)
 				task.wait(Time.Time)
 
-				
+
 			end
 		end)
 
@@ -276,14 +317,16 @@ function AutoFarm()
 		print("LOOPING")
 		if not Leaderstats or not Leaderstats:FindFirstChild("Pollen") then break end
 		print("LEADERSTAT EXISTS")
-		if Leaderstats.Pollen.Value > 0 then
-			print("CONVERTING")
-			IsConverting = true
-			Convert()
-		else
+		if Inventory.Worm.Value >= 300 then
+			UltraFish()
+		elseif Leaderstats.Pollen.Value > 0 then
 			print("GATHERING")
 
 			Gather()
+		else
+			print("CONVERTING")
+			IsConverting = true
+			Convert()
 		end
 	end
 
