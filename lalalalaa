@@ -323,7 +323,7 @@ function AutoFarm()
 			print("GATHERING")
 
 			Gather()
-		else
+		elseif Leaderstats.Pollen.Value <= 0 then
 			print("CONVERTING")
 			IsConverting = true
 			Convert()
