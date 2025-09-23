@@ -15,6 +15,7 @@ local Inventory = Player:WaitForChild("Inventory")
 local Map = workspace.Map
 local Mobs = workspace.Mobs
 
+local InfoTables = require(ReplicatedStorage.Modules.InformationTables).Tools :: {[string] : {["Time"] : number}}
 
 local Shops = Map.Shops
 local FleaMarket = Shops.FleaMarket
@@ -204,7 +205,20 @@ function AutoFarm()
 				task.wait(.01)
 			end
 		end)
+		task.defer(function()
+			while true do
+				local CurrentTool = Player.Equipment.Tools.Value
+				if not CurrentTool or CurrentTool == "" then continue end
+				local Time = InfoTables[CurrentTool]
+				if not Time then continue end
+				if not Time.Time then continue end
+				print(Time.Time)
+				game:GetService("ReplicatedStorage").Events.Server_Event:FireServer("UseTool", 1)
+				task.wait(Time.Time)
 
+				
+			end
+		end)
 
 
 		local Items = getgenv().requiredItems
