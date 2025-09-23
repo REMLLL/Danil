@@ -183,7 +183,12 @@ StopFishing = function()
 	game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer("StopFishingRequest")
 end
 local function UltraFish()
-	TweenTo(CFrame.new(883.232, 260.747, 1105.05))
+	IsConverting = true
+	TweenTo(CFrame.new(883.232, 259.747, 1105.05))
+	local Character = Player.Character
+	if not Character then IsConverting = false return end
+	Character.PrimaryPart.Anchored = true
+	
 	while true do
 		if Inventory.Worm.Value <= 0 then break end
 		local F = Fish()
@@ -196,6 +201,8 @@ local function UltraFish()
 		task.wait(0.1)
 
 	end
+	Character.PrimaryPart.Anchored = false
+	IsConverting = false
 end
 function AutoFarm()
 	task.wait(2)
