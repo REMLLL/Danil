@@ -127,6 +127,7 @@ local function ByManual(Value : Part)
 	
 	
 	TweenTo(CFrame.new(Value.Position + Vector3.yAxis * 2))
+	task.wait(.5)
 	game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, Value)
 	repeat task.wait() if not Leaderstats or not Leaderstats.Parent then break end until Leaderstats.Pollen.Value <= 0
 	task.wait(3)
