@@ -115,13 +115,23 @@ local function ByInstantConverter()
 		table.remove(UsedConverters, table.find(UsedConverters, Converter))
 	end)
 end
-local function ByManual(Value : Part)
+local function ByReset()
 	local Character = Player.Character
 	if not Character then return end
 
 	Character:BreakJoints()
 end
-
+local function ByManual(Value : Part)
+	local Character = Player.Character
+	if not Character then return end
+	
+	
+	TweenTo(CFrame.new(Value.Position + Vector3.yAxis * 2))
+	game:GetService("ReplicatedStorage").Events.Server_Function:InvokeServer(ohString1, ohString2, Value)
+	repeat task.wait() if not Leaderstats or not Leaderstats.Parent then break end until Leaderstats.Pollen.Value <= 0
+	task.wait(3)
+	
+end
 Convert = function()
 	local Character = Player.Character or Player.CharacterAdded:Wait()
 	local Anthill = Vars:WaitForChild("Anthill")
@@ -131,7 +141,11 @@ Convert = function()
 	if getgenv().insta and #UsedConverters < #AllConverters and Inventory.Ticket.Value >= 1 then
 		ByInstantConverter()
 	else
-		ByManual(Value)
+		if getgenv().ManualConversion then
+			ByManual(Value)
+		else
+			ByReset()
+		end
 	end
 	task.wait(3)
 end
